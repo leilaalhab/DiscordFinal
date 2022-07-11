@@ -2,6 +2,8 @@ package com.example.finalproject.welcome;
 
 import Client.Client;
 import com.example.finalproject.DiscordApplication;
+import com.example.finalproject.welcome.SignInController;
+import com.example.finalproject.welcome.SignUpController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

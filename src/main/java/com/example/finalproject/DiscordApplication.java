@@ -2,6 +2,7 @@ package com.example.finalproject;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -19,10 +20,10 @@ public class DiscordApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         stage = primaryStage;
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("WelcomeView.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("welcomeView.fxml")));
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
-        primaryStage.setFullScreen(true);
+//        primaryStage.setFullScreen(true);
         primaryStage.setTitle("Discord");
         primaryStage.setFullScreenExitHint("");
         primaryStage.show();
@@ -31,14 +32,14 @@ public class DiscordApplication extends Application {
     public void changeScene(String fxml) throws IOException {
         Parent pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxml)));
         stage.getScene().setRoot(pane);
-        stage.setFullScreen(true);
+//        stage.setFullScreen(true);
     }
 
 
-    public void showPopUp(ActionEvent event, String fxml){
+    public static void showPopUp(Class<?> c, Event event, String fxml){
         Parent root;
         try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxml)));
+            root = FXMLLoader.load(Objects.requireNonNull(c.getResource(fxml)));
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -51,4 +52,6 @@ public class DiscordApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
+
+
 }

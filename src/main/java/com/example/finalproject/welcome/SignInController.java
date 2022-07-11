@@ -2,7 +2,7 @@ package com.example.finalproject.welcome;
 
 import Client.Client;
 import com.example.finalproject.DiscordApplication;
-import com.example.finalproject.myAccount.MyAccountController;
+import com.example.finalproject.MainController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,10 +25,6 @@ public class SignInController implements Initializable {
     private static Client client;
     private DiscordApplication application = new DiscordApplication();
 
-    public void back() throws IOException {
-        application.changeScene("welcomeView.fxml");
-    }
-
     public static String usernameAuto;
 
     public static void setUsernameAuto(String usernameAuto) {
@@ -45,10 +41,12 @@ public class SignInController implements Initializable {
             statusMessage.setText("Sign in successful ! We missed you...");
         } else {
             statusMessage.setText("username or password is incorrect.");
+            return;
         }
 
-        MyAccountController.setClient(client);
-        application.changeScene("MyAccountView.fxml");
+        client.setStatus(1);
+        MainController.setClient(client);
+        application.changeScene("mainView.fxml");
     }
 
     @FXML

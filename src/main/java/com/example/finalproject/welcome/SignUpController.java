@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.event.ActionEvent;
 import javafx.scene.paint.Paint;
 
 import java.io.IOException;
@@ -42,10 +41,6 @@ public class SignUpController {
 
     public static void setClient(Client client) {
         SignUpController.client = client;
-    }
-
-    public void back() throws IOException {
-        application.changeScene("welcomeView.fxml");
     }
 
     @FXML
@@ -114,6 +109,7 @@ public class SignUpController {
         }
 
         return validPass;
+
     }
 
     @FXML

@@ -20,14 +20,15 @@ public class User implements Serializable {
     private static final long serialVersionUID = -7980400529655280743L;
     private String username;
     private String password;
-    private final String email;
-    private final String phoneNumber;
+    private  String email;
+    private  String phoneNumber;
     private File pfp;
     private Status status;
 
     private ArrayList<User> friendRequests = new ArrayList<>();
     private ArrayList<User> friends = new ArrayList<>();
     private HashSet<User> blockedUsers = new HashSet<>();
+    private ArrayList<User> sentRequests = new ArrayList<>();
 
     private ArrayList<PrivateChat> privateChats = new ArrayList<>();
     private ArrayList<DiscordServer> servers;
@@ -41,6 +42,60 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
         this.status = Status.OFFLINE;
         servers = new ArrayList<>();
+    }
+
+    public void removeSentRequest(User user) {
+        sentRequests.remove(user);
+    }
+    public void addSentRequest(User user) {
+        sentRequests.add(user);
+    }
+    /**
+     * setter method for username
+     * @param username
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * getter for email
+     * @return email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * setter for email
+     * @param email String
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * setter for phone number
+     * @param phoneNumber String
+     */
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    /**
+     * getter for phone number
+     * @return number
+     */
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    /**
+     * getter for pfp
+     * @return pfp
+     */
+    public File getPfp() {
+        return pfp;
     }
 
     public Chat getCurrentChat() {
@@ -58,16 +113,7 @@ public class User implements Serializable {
     }
 
     /**
-     * setter method for username
-     * @param username setter
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
      * removes given server from list of servers of this user
-     *
      * @param server given server
      */
     public void removeServer(DiscordServer server) {
@@ -76,7 +122,6 @@ public class User implements Serializable {
 
     /**
      * set password to new given password
-     *
      * @param password given password String
      */
     public void setPassword(String password) {
@@ -100,7 +145,6 @@ public class User implements Serializable {
 
     /**
      * sets current chat equal to given chat
-     *
      * @param currentChat given chat
      */
     public void setCurrentChat(Chat currentChat) {
@@ -131,7 +175,6 @@ public class User implements Serializable {
 
     /**
      * adds private chat to list of private chats of this user
-     *
      * @param privateChat given private chat
      */
     public void addPrivateChat(PrivateChat privateChat) {
@@ -158,20 +201,6 @@ public class User implements Serializable {
     }
 
     /**
-     * @return String phone number of user
-     */
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    /**
-     * @return String email of the user
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
      * @return current status of the user
      */
     public Status getStatus() {
@@ -180,7 +209,6 @@ public class User implements Serializable {
 
     /**
      * sets current status of user with index of given status
-     *
      * @param statusIndex int status index
      */
     public void setStatus(int statusIndex) {
@@ -189,7 +217,6 @@ public class User implements Serializable {
 
     /**
      * sets current status of user with given status
-     *
      * @param status given status
      */
     public void setStatus(Status status) {
@@ -198,7 +225,6 @@ public class User implements Serializable {
 
     /**
      * setter for pfp File
-     *
      * @param pfp file
      */
     public void setPfp(File pfp) {
@@ -215,7 +241,6 @@ public class User implements Serializable {
 
     /**
      * adds a given user to list of friendRequests
-     *
      * @param user given user
      */
     public void addRequest(User user) {
@@ -224,7 +249,6 @@ public class User implements Serializable {
 
     /**
      * removes request from given user from list of requests
-     *
      * @param user given user
      */
     public void removeRequest(User user) {
@@ -233,7 +257,6 @@ public class User implements Serializable {
 
     /**
      * finds request from given user and removes from list of requests and adds to list of friends
-     *
      * @param user given user
      */
     public void acceptRequest(User user) {
@@ -257,7 +280,6 @@ public class User implements Serializable {
 
     /**
      * adds user from list of friends of this user
-     *
      * @param user given user
      */
     public void addFriend(User user) {
@@ -266,7 +288,6 @@ public class User implements Serializable {
 
     /**
      * adds user from list of blocked users of this user
-     *
      * @param user given user
      */
     public void addBlockedUser(User user) {
@@ -275,7 +296,6 @@ public class User implements Serializable {
 
     /**
      * removes user from list of blocked users of this user
-     *
      * @param user given user
      */
     public void unblock(User user) {
@@ -308,26 +328,12 @@ public class User implements Serializable {
 
     /**
      * adds a server to the users arrayList of servers
-     *
      * @param discordServer given discordServer to be added
      */
     public void addServer(DiscordServer discordServer) {
         servers.add(discordServer);
     }
 
-    /**
-     * @return String of all friend requests of this user
-     */
-    public String getRequestsListAsString() {
-        String s = "";
-        if (friendRequests.isEmpty())
-            return "Empty\n";
-        int i = 1;
-        for (User user : friendRequests) {
-            s = s.concat(i++ + ") " + user + "\n");
-        }
-        return s;
-    }
 
     /**
      * @return String of all of this user friends
@@ -337,7 +343,7 @@ public class User implements Serializable {
         if (friends.isEmpty())
             return "Empty\n";
         for (User user : friends) {
-            s = s.concat(user.toStringWithStatus() + "\n");
+            s = s.concat(user.getUsername() + "\n");
         }
         return s;
     }
@@ -382,11 +388,9 @@ public class User implements Serializable {
 
         for (int i = 0; i < servers.size(); i++) {
             if (servers.get(i) != null) {
-
-                s = s.concat("[" + (i + 1) + "]" + servers.get(i).getName() + "\n");
+                s = s.concat((i + 1) + "]" + servers.get(i).getName() + "\n");
             }
         }
-
         return s;
     }
 
@@ -403,5 +407,38 @@ public class User implements Serializable {
      */
     public String toStringWithStatus() {
         return username + " [" + status + "]";
+    }
+
+    public ArrayList<User> getFriendRequests() {
+        return friendRequests;
+    }
+
+    public ArrayList<User> getFriends() {
+        return friends;
+    }
+
+    public HashSet<User> getBlockedUsers() {
+        return blockedUsers;
+    }
+
+    public String getRequestsListAsString() {
+        String s = "";
+        if (friendRequests.isEmpty())
+            return "Empty\n";
+        int i = 1;
+        for (User user : friendRequests) {
+            s = s.concat( user.getUsername() + " ");
+        }
+        return s;
+    }
+
+    public String getSentRequestsAsString() {
+        String s = "";
+        if (sentRequests.isEmpty())
+            return "Empty\n";
+        for (User user : sentRequests) {
+            s = s.concat( user.getUsername() + " ");
+        }
+        return s;
     }
 }

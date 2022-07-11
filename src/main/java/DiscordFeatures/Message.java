@@ -2,6 +2,7 @@ package DiscordFeatures;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 
 /**
  * A message is the data sent between users in chats. These messages each contain the
@@ -11,6 +12,9 @@ import java.time.LocalDateTime;
 public class Message implements Serializable {
     private final String content;
     private final LocalDateTime timeSent;
+    private HashSet<String> laughs;
+    private HashSet<String> likes;
+    private HashSet<String> dislikes;
 
     /**
      * Creates message with String parameter and local time
@@ -20,6 +24,43 @@ public class Message implements Serializable {
     public Message(String content) {
         this.content = content;
         timeSent = LocalDateTime.now();
+        laughs = new HashSet<>();
+        likes = new HashSet<>();
+        dislikes = new HashSet<>();
+    }
+
+    public String getDislikes() {
+        String s = "";
+        for (String username : dislikes) {
+            s = s.concat(username + "\n");
+        }
+        return s;
+    }
+
+    public String getLikes() {
+        String s = "";
+        for (String username : likes) {
+            s = s.concat(username + "\n");
+        }
+        return s;
+    }
+
+    public String getLaughs() {
+        String s = "";
+        for (String username : laughs) {
+            s = s.concat(username + "\n");
+        }
+        return s;
+    }
+
+    public void addReaction(String reaction, String username) {
+        int react = Integer.parseInt(reaction);
+        if (react == 1)
+            laughs.add(username);
+        else if (react == 2)
+            likes.add(username);
+        else if (react == 3)
+            dislikes.add(username);
     }
 
     /**

@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Hyperlink?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1300.0" spacing="20.0" style="-fx-background-color: #424549; -fx-background-radius: 8px; -fx-background-image: 'C:\Users\Lenovo\Desktop\background.webp';" styleClass="Background" stylesheets="@Background.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.welcome.SignUpController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1300.0" spacing="20.0" style="-fx-background-color: #424549; -fx-background-radius: 8px; -fx-background-image: 'C:\Users\Lenovo\Desktop\background.webp';" styleClass="Background" stylesheets="@Background.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.welcome.SignUpController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -35,7 +30,7 @@
                                 <Insets bottom="5.0" />
                             </padding>
                         </Label>
-                        <TextField fx:id="email" onKeyTyped="#checkEmail" prefHeight="30.0" prefWidth="400.0" style="-fx-background-color: #202020;" />
+                        <TextField fx:id="email" onKeyTyped="#checkEmail" prefHeight="30.0" prefWidth="400.0" style="-fx-background-color: #202020; -fx-text-fill: white;" />
                         <Label fx:id="emailStatus" prefHeight="17.0" prefWidth="384.0" />
                         <Label opacity="0.7" text="USERNAME" textFill="WHITE">
                             <font>
@@ -45,7 +40,7 @@
                                 <Insets bottom="5.0" top="15.0" />
                             </padding>
                         </Label>
-                        <TextField fx:id="username" onKeyTyped="#checkUsername" prefHeight="30.0" prefWidth="400.0" style="-fx-background-color: #202020;" />
+                        <TextField fx:id="username" onKeyTyped="#checkUsername" prefHeight="30.0" prefWidth="400.0" style="-fx-background-color: #202020; -fx-text-fill: white;" />
                         <Label fx:id="usernameStatus" prefHeight="17.0" prefWidth="379.0" textFill="#2f9e35" />
                         <Label opacity="0.7" text="PASSWORD" textFill="WHITE">
                             <font>
@@ -55,7 +50,7 @@
                                 <Insets bottom="5.0" top="15.0" />
                             </padding>
                         </Label>
-                        <PasswordField fx:id="password" onKeyTyped="#checkPassword" prefHeight="30.0" prefWidth="400.0" style="-fx-background-color: #202020;" />
+                        <PasswordField fx:id="password" onKeyTyped="#checkPassword" prefHeight="30.0" prefWidth="400.0" style="-fx-background-color: #202020; -fx-text-fill: white;" />
                         <Label fx:id="passwordCharStatus" prefHeight="17.0" prefWidth="387.0" />
                         <Label fx:id="passwordCapStatus" prefHeight="17.0" prefWidth="397.0" />
                         <Label fx:id="passwordNumStatus" prefHeight="17.0" prefWidth="401.0" />

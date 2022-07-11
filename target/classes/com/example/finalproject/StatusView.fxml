@@ -39,7 +39,7 @@
         </Label>
         <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
             <children>
-                <Button fx:id="dndButton" mnemonicParsing="false" onAction="#dndButtonPressed" style="-fx-background-color: black;" text="Do Not Disturb" textFill="WHITE">
+                <Button mnemonicParsing="false" onAction="#dndButtonPressed" style="-fx-background-color: black;" text="Do Not Disturb" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
@@ -49,7 +49,7 @@
         </VBox>
         <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
             <children>
-                <Button fx:id="invisibleButton" mnemonicParsing="false" onAction="#invisibleButtonPressed" style="-fx-background-color: black;" text="Invisible" textFill="WHITE">
+                <Button mnemonicParsing="false" onAction="#invisibleButtonPressed" style="-fx-background-color: black;" text="Invisible" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
@@ -57,12 +57,12 @@
                 <Label text="You will not apear online, but will have full access to all of Discord." textFill="#fcfafa" wrapText="true" />
             </children>
         </VBox>
-        <Button fx:id="onlineButton" mnemonicParsing="false" onAction="#onlineButtonPressed" style="-fx-background-color: black;" text="Online" textFill="WHITE" GridPane.columnIndex="1">
+        <Button mnemonicParsing="false" onAction="#onlineButtonPressed" style="-fx-background-color: black;" text="Online" textFill="WHITE" GridPane.columnIndex="1">
             <font>
                 <Font name="System Bold" size="16.0" />
             </font>
         </Button>
-        <Button fx:id="idleButton" mnemonicParsing="false" onAction="#idleButtonPressed" style="-fx-background-color: black;" text="Idle" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <Button mnemonicParsing="false" onAction="#idleButtonPressed" style="-fx-background-color: black;" text="Idle" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <font>
                 <Font name="System Bold" size="16.0" />
             </font>

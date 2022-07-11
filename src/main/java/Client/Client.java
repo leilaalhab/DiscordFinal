@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -53,7 +54,7 @@ public class Client {
      */
     private void shutDown(ObjectInputStream in, ObjectOutputStream out, Socket socket) {
         try {
-            user.setStatus(Status.OFFLINE);
+            setStatus(4);
             out.close();
             in.close();
             socket.close();
@@ -67,7 +68,7 @@ public class Client {
      *
      * @return Response from server
      */
-    synchronized private Response getResponse() {
+    synchronized public Response getResponse() {
         Response response = null;
         try {
             response = (Response) ois.readUnshared();
@@ -90,11 +91,16 @@ public class Client {
         }
     }
 
+    public String printServers() {
+        sendRequest(new Request<>(RequestType.PRINT_SERVERS));
+        return (String) getResponse().getData();
+    }
+
     /**
      * prints servers and allows client to choose which server they want to enter
      * if server is chosen action is taken to invoke method to enter that server
      */
-    private void viewServers() {
+    public void viewServers() {
         sendRequest(new Request<>(RequestType.PRINT_SERVERS));
         String serverNames = (String) getResponse().getData();
         System.out.print(serverNames);
@@ -799,20 +805,18 @@ public class Client {
             case 1 -> viewServers();
             case 2 -> {
                 closeChat();
-                printPrivateChatsUsernames();
+                PrivateChatUsernames();
 
                 //check username to be valid and not blocked
-                Request<String> request = new Request<>(RequestType.CHECK_USERNAME_FOR_CHAT);
                 String username = InputHandler.getString("username: ");
-                request.addData("username", username);
-                sendRequest(request);
-                Response response = getResponse();
+                Response response = getPrivateChat(username);
                 if (response.getResponseStatus() == ResponseStatus.INVALID_USERNAME)
                     System.out.println("Invalid input");
                 else if (response.getResponseStatus() == ResponseStatus.BLOCKED_USERNAME)
                     System.out.println("You can't send message to this user");
                 else {
                     while (true) {
+                        Request<String> request;
                         int choice = InputHandler.getInt("\n[1] Send Message\n[2] Send File\n[3] Download File", 3);
                         //send message
                         if (choice == 1) {
@@ -848,7 +852,7 @@ public class Client {
             case 5 -> sendFriendRequestProcess();
             case 6 -> blockFriendProcess();
             case 7 -> unblockUserProcess();
-            case 8 -> createServer();
+            case 8 -> createServer("name");
             case 9 -> userSettings();
             case 0 -> {
                 sendRequest(new Request<>(RequestType.SIGN_OUT));
@@ -860,6 +864,29 @@ public class Client {
         }
         return true;
     }
+
+
+
+    public Response enterPrivateChat(String username) {
+        Request<String> request = new Request<>(RequestType.PRIVATE_CHAT_MESSAGES);
+        request.addData("username", username);
+        sendRequest(request);
+        return getResponse();
+    }
+
+    /**
+     * get private chat
+     * @param username String username
+     * @return Response
+     */
+    public Response getPrivateChat(String username) {
+        Request<String> request = new Request<>(RequestType.CHECK_USERNAME_FOR_CHAT);
+        request.addData("username", username);
+        sendRequest(request);
+        return getResponse();
+    }
+
+
 
     /**
      * sends request to close the chat and stop listening for new messages
@@ -873,29 +900,24 @@ public class Client {
     /**
      * prompts client to create new server
      */
-    private void createServer() {
-        String name = InputHandler.getString("Enter the name of your new server:");
-        if (name.equals("0"))
-            return;
-
+    public void createServer(String name) {
         Request<String> newServerRequest = new Request<>(RequestType.NEW_SERVER);
         newServerRequest.addData("name", name);
         sendRequest(newServerRequest);
         DiscordServer server = (DiscordServer) getResponse().getData();
         user.addServer(server);
-        System.out.println("server created successfully.");
     }
 
     /**
      * sends request to print all privateChat usernames
      */
-    private void printPrivateChatsUsernames() {
+    public String PrivateChatUsernames() {
         Request<String> print = new Request<>(RequestType.PRINT_PRIVATE_CHATS_USERNAMES);
         print.addData("username", user.getUsername());
         sendRequest(print);
         Response response = getResponse();
 
-        System.out.println((String) response.getData());
+        return (String)response.getData();
     }
 
     /**
@@ -952,6 +974,7 @@ public class Client {
      */
     public void sendPrivateChatMessage(String username, String text) {
         Request<String> request = new Request<>(RequestType.SEND_MESSAGE);
+        text = user.getUsername() + ":" + text;
         request.addData("message", text);
         request.addData("username", username);
         sendRequest(request);
@@ -1136,16 +1159,12 @@ public class Client {
      * @param requester given username
      * @return whether the request was successful or not
      */
-    private void acceptFriendRequest(String requester) {
+    public void acceptFriendRequest(String requester) {
         Request<String> acceptFriendRequest = new Request<>(RequestType.ACCEPT_FRIEND_REQUEST);
         acceptFriendRequest.addData("receiver", user.getUsername());
         acceptFriendRequest.addData("requester", requester);
         sendRequest(acceptFriendRequest);
         Response response = getResponse();
-        if (response.getResponseStatus() == ResponseStatus.VALID_ACCEPT_FRIEND_REQUEST)
-            System.out.println("Now " + requester + " is your friend");
-        else if (response.getResponseStatus() == ResponseStatus.INVALID_ACCEPT_FRIEND_REQUEST)
-            System.out.println("Invalid input");
     }
 
     /**
@@ -1172,16 +1191,12 @@ public class Client {
      * @param requester given username
      * @return whether the request was successful or not
      */
-    private void deleteFriendRequest(String requester) {
+    public void deleteFriendRequest(String requester) {
         Request<String> deleteFriendRequest = new Request<>(RequestType.DELETE_FRIEND_REQUEST);
         deleteFriendRequest.addData("receiver", user.getUsername());
         deleteFriendRequest.addData("requester", requester);
         sendRequest(deleteFriendRequest);
         Response response = getResponse();
-        if (response.getResponseStatus() == ResponseStatus.VALID_DELETE_FRIEND_REQUEST)
-            System.out.println(requester + " is removed from your requests");
-        else if (response.getResponseStatus() == ResponseStatus.INVALID_DELETE_FRIEND_REQUEST)
-            System.out.println("Invalid input");
     }
 
     /**
@@ -1190,24 +1205,31 @@ public class Client {
      * @param receiver given username
      * @return whether the request was successful or not
      */
-    private boolean sendFriendRequest(String receiver) {
+    public ResponseStatus sendFriendRequest(String receiver) {
         Request<String> request = new Request<>(RequestType.FRIEND_REQUEST);
         request.addData("receiver", receiver);
         request.addData("requester", user.getUsername());
         sendRequest(request);
 
+        return getResponse().getResponseStatus();
+
+    }
+
+    public String getSentRequests() {
+        Request<String> request = new Request<>(RequestType.GET_SENT_REQUESTS);
+        String username = getUsername();
+        request.addData("username", username);
+        sendRequest(request);
         Response response = getResponse();
-        if (response.getResponseStatus() == ResponseStatus.FRIEND_REQUEST_TO_FRIEND)
-            System.out.println("This user is your friend!");
-        else if (response.getResponseStatus() == ResponseStatus.INVALID_USERNAME)
-            System.out.println("Invalid input");
-        else if (response.getResponseStatus() == ResponseStatus.DUPLICATE_FRIEND_REQUEST)
-            System.out.println("You have already sent request to this user");
-        else if (response.getResponseStatus() == ResponseStatus.VALID_FRIEND_REQUEST) {
-            System.out.println("Successfully sent");
-            return true;
-        }
-        return false;
+        return (String)response.getData();
+    }
+
+    public void removeRequest(String receiver) {
+        Request<String> request = new Request<>(RequestType.REMOVE_SENT_REQUEST);
+        request.addData("receiver", receiver);
+        request.addData("requester", getUsername());
+        sendRequest(request);
+        getResponse();
     }
 
     /**
@@ -1296,26 +1318,22 @@ public class Client {
      *
      * @param statusIndex given status
      */
-    private void setStatus(int statusIndex) {
+    public void setStatus(int statusIndex) {
         Request<String> request = new Request<>(RequestType.SET_STATUS);
         request.addData("status", Integer.toString(statusIndex - 1));
         sendRequest(request);
         Response response = getResponse();
-        if (response.getResponseStatus() == ResponseStatus.VALID_STATUS)
-            System.out.println("successfully done");
-        else if (response.getResponseStatus() == ResponseStatus.INVALID_STATUS)
-            System.out.println("invalid input");
     }
 
     /**
      * sends request to print the clients friends list and prints
      */
-    private void printFriends() {
+    public String printFriends() {
         Request<String> printList = new Request<>(RequestType.PRINT_FRIENDS);
         printList.addData("username", user.getUsername());
         sendRequest(printList);
         Response response = getResponse();
-        System.out.println((String) response.getData());
+        return (String)response.getData();
     }
 
     /**
@@ -1378,6 +1396,13 @@ public class Client {
 
         return true;
     }
+
+//    public User getUser(String username) {
+//        Request<String> userRequest = new Request<>(RequestType.GET_USER);
+//        userRequest.addData("username", username);
+//        sendRequest(userRequest);
+//        return (User)getResponse().getData();
+//    }
 
 
 
@@ -1467,30 +1492,31 @@ public class Client {
      * @return whether the login was successful or not
      */
     public Boolean logIn(String username, String pass) {
-            Request<String> request;
-            request = new Request<>(RequestType.SIGN_IN);
-            request.addData("username", username);
-            request.addData("pass", pass);
-            sendRequest(request);
-            Response response = getResponse();
+        Request<String> request;
+        request = new Request<>(RequestType.SIGN_IN);
+        request.addData("username", username);
+        request.addData("pass", pass);
+        sendRequest(request);
+        Response response = getResponse();
 
-            if (response.getResponseStatus() == ResponseStatus.SIGN_IN_INVALID)
-                return false;
-            else{
-                this.user = (User) response.getData();
-                user.setChatToNull();
-                return true;
-            }
+        if (response.getResponseStatus() == ResponseStatus.SIGN_IN_INVALID)
+            return false;
+        else{
+            this.user = (User) response.getData();
+            user.setChatToNull();
+            return true;
+        }
     }
+
 
     /**
      * prompts user to choose a user to send a friends request to and sends a request to do so
      */
-    private void sendFriendRequestProcess() {
+    public void sendFriendRequestProcess() {
         do {
             String receiver = InputHandler.getString("username: ");
-            if (receiver.equals("0") || sendFriendRequest(receiver))
-                return;
+            //if (receiver.equals("0") || sendFriendRequest(receiver))
+            //  return;
         } while (true);
     }
 
@@ -1511,9 +1537,9 @@ public class Client {
      */
     private void unblockUserProcess() {
         do {
-            Response response = printBlockedUsers();
-            if (response.getResponseStatus() == ResponseStatus.EMPTY_BLOCKED_USERS_LIST)
-                return;
+//            Response response = printBlockedUsers();
+//            if (response.getResponseStatus() == ResponseStatus.EMPTY_BLOCKED_USERS_LIST)
+//                return;
 
             String unblock = InputHandler.getString("write a user's username to unblock: ");
             if (unblock.equals("0"))
@@ -1534,15 +1560,53 @@ public class Client {
      *
      * @return Response from request of getting blocked users
      */
-    private Response printBlockedUsers() {
+    public String printBlockedUsers() {
         Request<String> printBlocked = new Request<>(RequestType.PRINT_BLOCKED_FRIENDS);
         printBlocked.addData("username", user.getUsername());
         sendRequest(printBlocked);
         Response response = getResponse();
-        System.out.println((String) response.getData());
-        return response;
+        return ((String) response.getData());
     }
 
+
+    public String getFriendRequests() {
+        Request<String> printFriendRequests = new Request<>(RequestType.PRINT_FRIEND_REQUESTS);
+        printFriendRequests.addData("username", user.getUsername());
+        sendRequest(printFriendRequests);
+        Response response = getResponse();
+        return (String) response.getData();
+    }
+
+    public ArrayList<User> getFriendRequestsArrayList(){
+        Request<String> request = new Request<>(RequestType.GET_FRIEND_REQUESTS);
+        request.addData("username", getUsername());
+        sendRequest(request);
+        return (ArrayList<User>)getResponse().getData();
+    }
+
+    public ArrayList<User> getFriendsArrayList(){
+        String username = InputHandler.getString("");
+        Request<String> request = new Request<>(RequestType.GET_FRIENDS);
+        request.addData("username", getUsername());
+        sendRequest(request);
+        ArrayList<User> arr = (ArrayList<User>)getResponse().getData();
+        System.out.println(arr.size());
+        return arr;
+    }
+
+    public HashSet<User> getBlockedHashSet(){
+        Request<String> request = new Request<>(RequestType.GET_BLOCKED);
+        request.addData("username", getUsername());
+        sendRequest(request);
+        return (HashSet<User>)getResponse().getData();
+    }
+
+    public User getUser(String username) {
+        Request<String> userRequest = new Request<>(RequestType.GET_USER);
+        userRequest.addData("username", username);
+        sendRequest(userRequest);
+        return (User)getResponse().getData();
+    }
 
     /**
      * sends request to view list of clients friend requests and prompts user to choose
@@ -1597,6 +1661,39 @@ public class Client {
         sendMessage(username, RequestType.SEND_MESSAGE);
     }
 
+    public String getDislikes(String messageIndex, String username) {
+        Request<String> request = new Request<>(RequestType.GET_DISLIKES);
+        request.addData("username", username);
+        request.addData("messageIndex", messageIndex);
+        sendRequest(request);
+        return (String)getResponse().getData();
+    }
+
+    public String getLikes(String messageIndex, String username) {
+        Request<String> request = new Request<>(RequestType.GET_LIKES);
+        request.addData("username", username);
+        request.addData("messageIndex", messageIndex);
+        sendRequest(request);
+        return (String)getResponse().getData();
+    }
+
+    public String getLaughs(String messageIndex, String username) {
+        Request<String> request = new Request<>(RequestType.GET_LAUGHS);
+        request.addData("username", username);
+        request.addData("messageIndex", messageIndex);
+        sendRequest(request);
+        return (String)getResponse().getData();
+    }
+
+    public void reactToMessage(String reaction, String messageIndex, String username) {
+        Request<String> request = new Request<>(RequestType.REACT_MESSAGE);
+        request.addData("username", username);
+        request.addData("reaction", reaction);
+        request.addData("messageIndex", messageIndex);
+        sendRequest(request);
+        getResponse();
+    }
+
     public String getUsername() {
         return user.getUsername();
     }
@@ -1618,6 +1715,13 @@ public class Client {
     public Status getStatus() {
         Request<String> request = new Request<>(RequestType.GET_STATUS);
         request.addData("username", getUsername());
+        sendRequest(request);
+        return (Status)getResponse().getData();
+    }
+
+    public Status getStatus(String username) {
+        Request<String> request = new Request<>(RequestType.GET_STATUS);
+        request.addData("username", username);
         sendRequest(request);
         return (Status)getResponse().getData();
     }
