@@ -132,7 +132,7 @@ public class HomeController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        contentPane.getChildren().add(newPane);
+        contentPane.getChildren().setAll(newPane);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class HomeController implements Initializable {
         String allMessages = (String) client.enterPrivateChat(chatUsername).getData();
         ChatController.setUsername(chatUsername);
         if (allMessages.equals("Empty")) {
-            contentPane.getChildren().add(FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ChatView.fxml"))));
+            contentPane.getChildren().setAll((Pane)FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ChatView.fxml"))));
             return;
         }
 
@@ -166,6 +166,7 @@ public class HomeController implements Initializable {
         ListView<Pane> panes = (ListView<Pane>)((VBox)chatPane.getChildren().get(0)).getChildren().get(0);
         ObservableList<Pane> observableList = FXCollections.observableArrayList();
 
+        panes.setItems(null);
         for (String message : messages) {
 
             Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MessageView.fxml")));
@@ -203,14 +204,10 @@ public class HomeController implements Initializable {
             message = message.substring(message.indexOf(":") + 1);
             Label text = (Label) pane.getChildren().get(2);
             text.setText(message);
-
-
             observableList.add(pane);
-            //panes.setItems();
         }
         panes.setItems(observableList);
-        //Platform.runLater(() -> contentPane.getChildren().add(chatPane));
-        contentPane.getChildren().add(chatPane);
+        contentPane.getChildren().setAll(chatPane);
     }
 
     private void setUsernameLabel(){
