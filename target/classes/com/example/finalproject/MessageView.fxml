@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#options" prefWidth="950.0" style="-fx-background-color: #424549; -fx-background-radius: 8px;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.MessageController">
+   <children>
+      <Circle fx:id="profileCircle" fill="DODGERBLUE" layoutX="29.0" layoutY="26.0" radius="23.0" stroke="#303030" strokeType="INSIDE" />
+      <Label fx:id="usernameLabel" layoutX="58.0" layoutY="6.0" text="Label" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="text" layoutX="61.0" layoutY="26.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" textFill="WHITE" wrapText="true">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <Label fx:id="index" layoutX="929.0" layoutY="6.0" prefHeight="18.0" prefWidth="14.0" text="0" textFill="#424549">
+         <font>
+            <Font size="2.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>
