@@ -4,9 +4,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Popup;
+
+import static com.example.finalproject.ChatController.client;
 
 public class CreateServerController {
 
@@ -19,6 +20,12 @@ public class CreateServerController {
     @FXML
     private TextField serverNameTf;
 
+    private static MainController origin;
+
+    public static void setOrigin(MainController origin) {
+        CreateServerController.origin = origin;
+    }
+
     @FXML
     void cancelButtonPressed(ActionEvent event) {
         Popup popup = (Popup) ((Node) event.getSource()).getScene().getWindow();
@@ -27,7 +34,9 @@ public class CreateServerController {
 
     @FXML
     void doneButtonPressed(ActionEvent event) {
-
+        client.createServer(serverNameTf.getText());
+        origin.update();
+        cancelButtonPressed(event);
     }
 
 }

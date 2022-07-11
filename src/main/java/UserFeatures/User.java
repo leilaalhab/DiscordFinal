@@ -1,6 +1,5 @@
 package UserFeatures;
 
-import DiscordFeatures.Channel;
 import DiscordFeatures.Chat;
 import DiscordFeatures.DiscordServer;
 import DiscordFeatures.PrivateChat;
@@ -29,6 +28,7 @@ public class User implements Serializable {
     private ArrayList<User> friendRequests = new ArrayList<>();
     private ArrayList<User> friends = new ArrayList<>();
     private HashSet<User> blockedUsers = new HashSet<>();
+    private ArrayList<User> sentRequests = new ArrayList<>();
 
     private ArrayList<PrivateChat> privateChats = new ArrayList<>();
     private ArrayList<DiscordServer> servers;
@@ -44,6 +44,12 @@ public class User implements Serializable {
         servers = new ArrayList<>();
     }
 
+    public void removeSentRequest(User user) {
+        sentRequests.remove(user);
+    }
+    public void addSentRequest(User user) {
+        sentRequests.add(user);
+    }
     /**
      * setter method for username
      * @param username
@@ -337,7 +343,7 @@ public class User implements Serializable {
         if (friends.isEmpty())
             return "Empty\n";
         for (User user : friends) {
-            s = s.concat(user.toStringWithStatus() + "\n");
+            s = s.concat(user.getUsername() + "\n");
         }
         return s;
     }
@@ -382,11 +388,9 @@ public class User implements Serializable {
 
         for (int i = 0; i < servers.size(); i++) {
             if (servers.get(i) != null) {
-
-                s = s.concat("[" + (i + 1) + "]" + servers.get(i).getName() + "\n");
+                s = s.concat((i + 1) + "]" + servers.get(i).getName() + "\n");
             }
         }
-
         return s;
     }
 
@@ -423,6 +427,16 @@ public class User implements Serializable {
             return "Empty\n";
         int i = 1;
         for (User user : friendRequests) {
+            s = s.concat( user.getUsername() + " ");
+        }
+        return s;
+    }
+
+    public String getSentRequestsAsString() {
+        String s = "";
+        if (sentRequests.isEmpty())
+            return "Empty\n";
+        for (User user : sentRequests) {
             s = s.concat( user.getUsername() + " ");
         }
         return s;

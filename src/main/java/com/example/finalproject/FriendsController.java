@@ -21,6 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
 import java.io.File;
@@ -78,114 +79,157 @@ public class FriendsController implements Initializable {
         }
     }
 
-//    private void showFriendRequests(Label usernameLabel) throws URISyntaxException {
-//        String requests = client.getFriendRequests();
-//        System.out.println(requests);
-//        if (requests.equals("Empty\n"))
-//            return;
-//        String[] usernames = requests.split(" ");
-//        for (String username : usernames) {
-////            System.out.println("[" +username+ "]");
-//
-//            username = username.stripTrailing();
-//
-//            usernameLabel.setText(username);
-//            User user = client.getUser(username);
-//
-//        }
-//    }
-
-
     public void pending(){
         pendingListView.getItems().clear();
         String requests = client.getFriendRequests();
-        if (requests.equals("Empty\n"))
-            return;
+        if (!requests.equals("Empty\n")) {
+            String[] usernames = requests.split(" ");
 
-        String[] usernames = requests.split(" ");
+            for (String username : usernames) {
+                username = username.stripTrailing();
 
-        for (String username : usernames) {
-            username = username.stripTrailing();
-            System.out.println("[" +username+ "]");
-            User user = client.getUser(username);
-            try {
-                Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ReceivedFriendRequestView.fxml")));
-                Circle profileCircle = (Circle) pane.getChildren().get(0);
-                if (user.getPfp() == null) {
-                    Image image = new Image(new File(System.getProperty("user.dir") + profilePhotoPath).toURI().toString());
-                    profileCircle.setFill(new ImagePattern(image));
-                    //client.getUser().setPfp(new File(profilePhotoPath));
-                } else {
-                    profileCircle.setFill(new ImagePattern(new Image(user.getPfp().getAbsolutePath())));
+                try {
+                    Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("ReceivedFriendRequestView.fxml")));
+                    Circle profileCircle = (Circle) pane.getChildren().get(0);
+                    if (client.getPFP(username) == null) {
+                        Image image = new Image(new File(System.getProperty("user.dir") + profilePhotoPath).toURI().toString());
+                        profileCircle.setFill(new ImagePattern(image));
+                    } else {
+                        Image image = new Image(client.getPFP(username).toURI().toString());
+                        profileCircle.setFill(new ImagePattern(image));
+                    }
+
+                    Circle statusCircle = (Circle) pane.getChildren().get(1);
+                    Status status = client.getStatus(username);
+                    String path = "";
+                    if (status == Status.ONLINE) {
+                        statusCircle.setFill(Color.GREEN);
+                    } else if (status == Status.OFFLINE)
+                        path = "/src/main/resources/com/example/finalproject/invisibleStatus.png";
+                    else if (status == Status.IDLE)
+                        path = "/src/main/resources/com/example/finalproject/idleStatus.png";
+                    else if (status == Status.DND)
+                        path = "/src/main/resources/com/example/finalproject/dndStatus.png";
+
+                    if (!path.equals("")) {
+                        Image image = new Image(new File(System.getProperty("user.dir") + path).toURI().toString());
+                        statusCircle.setFill(new ImagePattern(image));
+                    }
+
+                    Label usernamel = (Label) pane.getChildren().get(2);
+                    usernamel.setText(username);
+                    friendRequests.add(pane);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+            }
+        }
 
-                Circle statusCircle = (Circle) pane.getChildren().get(1);
-                Status status = client.getStatus();
-                String path = "";
-                if (status == Status.ONLINE) {
-                    statusCircle.setFill(Color.GREEN);
+        String sentRequests = client.getSentRequests();
+        if (!sentRequests.equals("Empty\n")) {
+            String[] sent = sentRequests.split(" ");
+
+            for (String username : sent) {
+                username = username.stripTrailing();
+
+                try {
+                    Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("SentFriendRequestView.fxml")));
+                    Circle profileCircle = (Circle) pane.getChildren().get(0);
+                    if (client.getPFP(username) == null) {
+                        Image image = new Image(new File(System.getProperty("user.dir") + profilePhotoPath).toURI().toString());
+                        profileCircle.setFill(new ImagePattern(image));
+                    } else {
+                        Image image = new Image(client.getPFP(username).toURI().toString());
+                        profileCircle.setFill(new ImagePattern(image));
+                    }
+
+                    Circle statusCircle = (Circle) pane.getChildren().get(1);
+                    Status status = client.getStatus(username);
+                    String path = "";
+                    if (status == Status.ONLINE) {
+                        statusCircle.setFill(Color.GREEN);
+                    } else if (status == Status.OFFLINE)
+                        path = "/src/main/resources/com/example/finalproject/invisibleStatus.png";
+                    else if (status == Status.IDLE)
+                        path = "/src/main/resources/com/example/finalproject/idleStatus.png";
+                    else if (status == Status.DND)
+                        path = "/src/main/resources/com/example/finalproject/dndStatus.png";
+
+                    if (!path.equals("")) {
+                        Image image = new Image(new File(System.getProperty("user.dir") + path).toURI().toString());
+                        statusCircle.setFill(new ImagePattern(image));
+                    }
+
+                    Label usernamel = (Label) pane.getChildren().get(2);
+                    usernamel.setText(username);
+                    friendRequests.add(pane);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                else if (status == Status.OFFLINE)
-                    path = "/src/main/resources/com/example/finalproject/invisibleStatus.png";
-                else if (status == Status.IDLE)
-                    path = "/src/main/resources/com/example/finalproject/idleStatus.png";
-                else if (status == Status.DND)
-                    path = "/src/main/resources/com/example/finalproject/dndStatus.png";
-
-                if (!path.equals("")) {
-                    Image image = new Image(new File(System.getProperty("user.dir") + path).toURI().toString());
-                    statusCircle.setFill(new ImagePattern(image));
-                }
-
-                Label usernamel = (Label) pane.getChildren().get(2);
-                usernamel.setText(user.getUsername());
-                friendRequests.add(pane);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
 
     }
 
     private void friends(){
-        for (User user : client.getFriendsArrayList()) {
+        allListView.getItems().clear();
+        onlineListView.getItems().clear();
+
+        String friendsList = client.printFriends();
+        if (friendsList.equals("Empty\n")) {
+            return;
+        }
+        String[] friends = friendsList.split("\n");
+
+        for (String username : friends ) {
             boolean isOnline = false;
             try {
                 Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("UserView.fxml")));
                 pane.setPrefWidth(640);
                 Circle profileCircle = (Circle) pane.getChildren().get(0);
-                if (user.getPfp() == null) {
-                    Image image = new Image(new File(System.getProperty("user.dir") + profilePhotoPath).toURI().toString());
+                Image image;
+                if (client.getPFP(username) == null) {
+                    image = new Image(new File(System.getProperty("user.dir") + profilePhotoPath).toURI().toString());
                     profileCircle.setFill(new ImagePattern(image));
-                    //client.getUser().setPfp(new File(profilePhotoPath));
                 } else {
-                    profileCircle.setFill(new ImagePattern(new Image(user.getPfp().getAbsolutePath())));
+                    image = new Image(client.getPFP(username).toURI().toString());
+                    profileCircle.setFill(new ImagePattern(image));
                 }
 
                 Circle statusCircle = (Circle) pane.getChildren().get(1);
-                Status status = client.getStatus();
+                Status status = client.getStatus(username);
                 String path = "";
+                Paint paint = null;
                 if (status == Status.ONLINE) {
-                    statusCircle.setFill(Color.GREEN);
+                    paint = Color.GREEN;
+                    isOnline = true;
+                } else if (status == Status.OFFLINE) {
+                    path = "/src/main/resources/com/example/finalproject/invisibleStatus.png";
+                } else if (status == Status.IDLE) {
+                    path = "/src/main/resources/com/example/finalproject/idleStatus.png";
+                    isOnline = true;
+                }else if (status == Status.DND) {
+                    path = "/src/main/resources/com/example/finalproject/dndStatus.png";
                     isOnline = true;
                 }
-                else if (status == Status.OFFLINE)
-                    path = "/src/main/resources/com/example/finalproject/invisibleStatus.png";
-                else if (status == Status.IDLE)
-                    path = "/src/main/resources/com/example/finalproject/idleStatus.png";
-                else if (status == Status.DND)
-                    path = "/src/main/resources/com/example/finalproject/dndStatus.png";
 
                 if (!path.equals("")) {
-                    Image image = new Image(new File(System.getProperty("user.dir") + path).toURI().toString());
-                    statusCircle.setFill(new ImagePattern(image));
+                    paint = new ImagePattern(new Image(new File(System.getProperty("user.dir") + path).toURI().toString()));
                 }
 
-                Label username = (Label) pane.getChildren().get(2);
-                username.setText(user.getUsername());
+                statusCircle.setFill(paint);
+
+                Label usernameL = (Label) pane.getChildren().get(2);
+                usernameL.setText(username);
                 allFriends.add(pane);
-                if (isOnline)
-                    onlineFriends.add(pane);
+                if (isOnline) {
+                    Pane pane2 =  FXMLLoader.load(Objects.requireNonNull(getClass().getResource("UserView.fxml")));
+                    pane2.setPrefWidth(640);
+                    ((Circle)pane2.getChildren().get(0)).setFill(new ImagePattern(image));
+                    ((Circle) pane2.getChildren().get(1)).setFill(paint);
+                    ((Label) pane2.getChildren().get(2)).setText(username);
+                    onlineFriends.add(pane2);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -193,20 +237,27 @@ public class FriendsController implements Initializable {
     }
 
     private void blocked(){
-        for (User user : client.getBlockedHashSet()) {
+        String allBlocked = client.printBlockedUsers();
+        if (allBlocked.equals("Empty\n")) {
+            return;
+        }
+        String[] blockedusers = allBlocked.split("\n");
+
+        for (String username : blockedusers) {
             try {
                 Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("UserView.fxml")));
                 Circle profileCircle = (Circle) pane.getChildren().get(0);
-                if (user.getPfp() == null) {
+                if (client.getPFP(username) == null) {
                     Image image = new Image(new File(System.getProperty("user.dir") + profilePhotoPath).toURI().toString());
                     profileCircle.setFill(new ImagePattern(image));
                     //client.getUser().setPfp(new File(profilePhotoPath));
                 } else {
-                    profileCircle.setFill(new ImagePattern(new Image(user.getPfp().getAbsolutePath())));
+                    Image image = new Image(client.getPFP(username).toURI().toString());
+                    profileCircle.setFill(new ImagePattern(image));
                 }
 
                 Circle statusCircle = (Circle) pane.getChildren().get(1);
-                Status status = client.getStatus();
+                Status status = client.getStatus(username);
                 String path = "";
                 if (status == Status.ONLINE) {
                     statusCircle.setFill(Color.GREEN);
@@ -223,8 +274,8 @@ public class FriendsController implements Initializable {
                     statusCircle.setFill(new ImagePattern(image));
                 }
 
-                Label username = (Label) pane.getChildren().get(2);
-                username.setText(user.getUsername());
+                Label usernameL = (Label) pane.getChildren().get(2);
+                usernameL.setText(username);
                 blockedFriends.add(pane);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -235,19 +286,13 @@ public class FriendsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ReceivedFriendRequest.setClient(client);
         ReceivedFriendRequest.setOrigin(this);
-//        client.acceptFriendRequest("melika");
+        SentFriendRequestController.setOrigin(this);
+        SentFriendRequestController.setClient(client);
+
         pending();
-//        friends();
+
+        friends();
 //        blocked();
-
-
-//        friendRequests.addListener(new InvalidationListener() {
-//            @Override
-//            public void invalidated(Observable observable) {
-//                pending();
-//                System.out.println("yes");
-//            }
-//        });
 
 
         pendingListView.setItems(friendRequests);

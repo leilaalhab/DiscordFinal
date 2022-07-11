@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="993.6" style="-fx-background-color: #424549;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.ChatController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="993.6" style="-fx-background-color: #424549;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.ChatController">
    <children>
       <VBox style="-fx-background-color: #424549;">
          <children>
             <ListView fx:id="listView" prefHeight="649.0" prefWidth="994.0" style="-fx-background-color: #424549; -fx-control-inner-background: #424549;" />
             <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="994.0" spacing="2.0">
                <children>
-                  <TextField fx:id="messageTf" prefHeight="32.0" prefWidth="868.0" promptText="Message" style="-fx-background-color: #505459; -fx-background-radius: 6px;" />
+                  <TextField fx:id="messageTf" onAction="#sendMessageButtonPressed" prefHeight="32.0" prefWidth="868.0" promptText="Message" style="-fx-background-color: #505459; -fx-background-radius: 6px;" />
                   <Button mnemonicParsing="false" onAction="#sendMessageButtonPressed" prefHeight="39.0" prefWidth="58.0" style="-fx-background-radius: 18px; -fx-background-color: #505459;" text="Send" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="12.0" />

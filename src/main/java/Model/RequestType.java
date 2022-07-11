@@ -91,4 +91,11 @@ public enum RequestType {
     CHANGE_EMAIL,
     CHANGE_PHONE,
     CHANGE_USER,
+
+    REACT_MESSAGE,
+    GET_LAUGHS,
+    GET_LIKES,
+    GET_DISLIKES,
+    GET_SENT_REQUESTS,
+    REMOVE_SENT_REQUEST,
 }

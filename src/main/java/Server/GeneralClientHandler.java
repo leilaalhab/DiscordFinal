@@ -209,8 +209,9 @@ public class GeneralClientHandler extends ClientHandler implements Runnable {
 
             case GET_EMAIL -> response = new Response(ResponseStatus.VALID_STATUS, user.getEmail());
             case GET_PHONE -> response = new Response(ResponseStatus.VALID_STATUS, user.getPhoneNumber());
-            case GET_PFP -> response = new Response(ResponseStatus.VALID_STATUS, user.getPfp());
-            case GET_STATUS -> response = new Response(ResponseStatus.VALID_STATUS, user.getStatus());
+            case GET_PFP -> response = new Response(ResponseStatus.VALID_STATUS, findUser((String) request.getData("username")).getPfp())
+            ;
+            case GET_STATUS -> response = new Response(ResponseStatus.VALID_STATUS, findUser((String) request.getData("username")).getStatus());
             case GET_FRIEND_REQUESTS -> response = new Response(ResponseStatus.VALID_STATUS, user.getFriendRequests());
             case GET_FRIENDS -> response = new Response(ResponseStatus.VALID_STATUS, user.getFriends());
             case GET_BLOCKED -> response = new Response(ResponseStatus.VALID_STATUS, user.getBlockedUsers());
@@ -218,8 +219,49 @@ public class GeneralClientHandler extends ClientHandler implements Runnable {
             case CHANGE_EMAIL -> response = changeEmail((Request<String>) request);
             case CHANGE_PHONE -> response = changePhone((Request<String>) request);
             case CHANGE_USER -> response = changeUser((Request<String>) request);
+
+            case REACT_MESSAGE -> response = reactToMessage((Request<String>) request);
+            case GET_LAUGHS -> response = getLaughs((Request<String>) request);
+            case GET_LIKES -> response = getLikes((Request<String>) request);
+            case GET_DISLIKES -> response = getDislikes((Request<String>) request);
+            case GET_SENT_REQUESTS -> response = getSentRequests((Request<String>) request);
+            case REMOVE_SENT_REQUEST -> response = revokeRequest((Request<String>) request);
         }
         return response;
+    }
+
+    public Response getDislikes(Request<String> request) {
+        String messageIndex = request.getData("messageIndex");
+        String person2username = request.getData("username");
+        PrivateChat privateChat = (PrivateChat) findChat(person2username);
+        String laughReacts = privateChat.getMessage(Integer.parseInt(messageIndex)).getDislikes();
+        return new Response(ResponseStatus.VALID_STATUS, laughReacts);
+
+    }
+    public Response getLikes(Request<String> request) {
+        String messageIndex = request.getData("messageIndex");
+        String person2username = request.getData("username");
+        PrivateChat privateChat = (PrivateChat) findChat(person2username);
+        String laughReacts = privateChat.getMessage(Integer.parseInt(messageIndex)).getLikes();
+        return new Response(ResponseStatus.VALID_STATUS, laughReacts);
+    }
+     public Response getLaughs(Request<String> request) {
+        String messageIndex = request.getData("messageIndex");
+        String person2username = request.getData("username");
+        PrivateChat privateChat = (PrivateChat) findChat(person2username);
+        String laughReacts = privateChat.getMessage(Integer.parseInt(messageIndex)).getLaughs();
+        return new Response(ResponseStatus.VALID_STATUS, laughReacts);
+    }
+
+    public Response reactToMessage(Request<String> request) {
+        String reaction = request.getData("reaction");
+        String messageIndex = request.getData("messageIndex");
+        String person2username = request.getData("username");
+
+        PrivateChat privateChat = (PrivateChat) findChat(person2username);
+        privateChat.getMessage(Integer.parseInt(messageIndex)).addReaction(reaction, person2username);
+
+        return new Response(ResponseStatus.VALID_STATUS);
     }
 
     private Response changeUser(Request<String> request) {
@@ -823,6 +865,23 @@ public class GeneralClientHandler extends ClientHandler implements Runnable {
         return new Response(ResponseStatus.NOT_EMPTY_FRIEND_REQUEST_LIST, data);
     }
 
+    private Response getSentRequests(Request<String> request) {
+        String username = request.getData("username");
+        User user = findUser(username);
+        String response = user.getSentRequestsAsString();
+        return new Response(ResponseStatus.VALID_STATUS, response);
+    }
+
+    private Response revokeRequest(Request<String> request) {
+        String receiverUsername = request.getData("receiver");
+        String requesterUsername = request.getData("requester");
+        User receiver = findUser(receiverUsername);
+        User requester = findUser(requesterUsername);
+        receiver.removeRequest(requester);
+        requester.removeSentRequest(receiver);
+        return new Response(ResponseStatus.VALID_STATUS);
+    }
+
     /**
      * invokes action to send friend request to specified user
      *
@@ -834,6 +893,7 @@ public class GeneralClientHandler extends ClientHandler implements Runnable {
         String requesterUsername = request.getData("requester");
         User receiver = findUser(receiverUsername);
         User requester = findUser(requesterUsername);
+        requester.addSentRequest(receiver);
         Response response;
         if (receiver == null) response = new Response(ResponseStatus.INVALID_USERNAME);
         else if (receiver.isRequestedAlready(requester))
@@ -859,6 +919,7 @@ public class GeneralClientHandler extends ClientHandler implements Runnable {
         User requester = receiver.findRequest(requesterUsername);
         if (requester == null) return new Response(ResponseStatus.INVALID_ACCEPT_FRIEND_REQUEST);
         receiver.acceptRequest(requester);
+        requester.removeSentRequest(receiver);
         return new Response(ResponseStatus.VALID_ACCEPT_FRIEND_REQUEST);
     }
 
@@ -989,7 +1050,7 @@ public class GeneralClientHandler extends ClientHandler implements Runnable {
         PrivateChat privateChat = (PrivateChat) findChat(person2username);
 
         this.user.setChatToNull();
-        return new Response(ResponseStatus.VALID_STATUS, privateChat.getMessagesNotNumbered());
+        return new Response(ResponseStatus.VALID_STATUS, privateChat.getMessagesAsString());
     }
 
     /**
@@ -1033,8 +1094,6 @@ public class GeneralClientHandler extends ClientHandler implements Runnable {
         String text = request.getData("message");
         String username = request.getData("username");
         Message message = new Message(text);
-
-        if (text.substring(text.indexOf(":") + 2).equals("0")) return null;
 
         findChat(username).addMessage(message);
 

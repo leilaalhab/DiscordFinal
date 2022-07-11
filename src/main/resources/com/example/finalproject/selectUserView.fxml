@@ -18,7 +18,7 @@
             <Insets />
          </VBox.margin>
       </Label>
-      <Label fx:id="changePhoneNumberLabel" opacity="0.7" text="Enter a username." textFill="WHITE">
+      <Label fx:id="alertLabel" opacity="0.7" text="Enter a username." textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>
@@ -37,8 +37,8 @@
       </VBox>
       <HBox alignment="TOP_RIGHT">
          <children>
-            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelButtonPressed" style="-fx-background-color: #424549;" text="Cancel" textFill="WHITE" />
-            <Button fx:id="doneButton" mnemonicParsing="false" onAction="#doneButtonPressed" style="-fx-background-color: #7289da;" text="Done" textFill="WHITE" />
+            <Button mnemonicParsing="false" onAction="#cancelButtonPressed" style="-fx-background-color: #424549;" text="Cancel" textFill="WHITE" />
+            <Button mnemonicParsing="false" onAction="#doneButtonPressed" style="-fx-background-color: #7289da;" text="Done" textFill="WHITE" />
          </children>
       </HBox>
    </children>

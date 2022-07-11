@@ -64,7 +64,7 @@ public abstract class Chat implements Serializable {
         if (messages.isEmpty())
             return "Empty";
         for (Message message : messages) {
-            s = s.concat("(" + i + ")" + message.toString() + "\n");
+            s = s.concat( i  + message.toString() + "\n");
             i++;
         }
         return s;
@@ -121,7 +121,7 @@ public abstract class Chat implements Serializable {
      * @return Message of given index
      */
     public Message getMessage(int index) {
-        return messages.get(index);
+        return messages.get(index-1);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.example.finalproject;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -35,7 +36,7 @@ public class DiscordApplication extends Application {
     }
 
 
-    public static void showPopUp(Class<?> c, ActionEvent event, String fxml){
+    public static void showPopUp(Class<?> c, Event event, String fxml){
         Parent root;
         try {
             root = FXMLLoader.load(Objects.requireNonNull(c.getResource(fxml)));
@@ -51,4 +52,6 @@ public class DiscordApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
+
+
 }

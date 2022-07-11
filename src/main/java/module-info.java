@@ -1,4 +1,4 @@
-module com.example.demo1 {
+module com.example.finalProject {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -10,6 +10,10 @@ module com.example.demo1 {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
 
-    opens com.example.finalproject to javafx.fxml;
+    opens com.example.finalproject.welcome to javafx.fxml;
     exports com.example.finalproject;
+
+    opens com.example.finalproject.account to javafx.fxml;
+
+    opens com.example.finalproject to javafx.fxml;
 }

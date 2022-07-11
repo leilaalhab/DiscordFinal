@@ -1,8 +1,7 @@
 package com.example.finalproject;
 
 import Client.Client;
-import com.example.finalproject.ChangeUsernameController;
-import com.example.finalproject.MyAccountController;
+import UserFeatures.Status;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -53,7 +52,8 @@ public class StatusController {
 
     @FXML
     void invisibleButtonPressed(ActionEvent event) {
-        client.setStatus(4);
+        client.setStatus(5);
+        System.out.println(Status.values()[4]);
         origin.setStatusPhoto();
         popup = (Popup) ((Node) event.getSource()).getScene().getWindow();
         popup.hide();
