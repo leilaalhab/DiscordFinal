@@ -2,7 +2,6 @@ package com.example.finalproject;
 
 import Client.Client;
 import UserFeatures.Status;
-import com.example.finalproject.account.MyAccountController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
