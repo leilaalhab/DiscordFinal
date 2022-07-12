@@ -226,40 +226,93 @@ public class GeneralClientHandler extends ClientHandler implements Runnable {
             case GET_DISLIKES -> response = getDislikes((Request<String>) request);
             case GET_SENT_REQUESTS -> response = getSentRequests((Request<String>) request);
             case REMOVE_SENT_REQUEST -> response = revokeRequest((Request<String>) request);
+
+            case REACT_MESSAGE_SERVER -> response = reactToServerMessage((Request<String>) request);
+            case  GET_LAUGHS_SERVER -> response = getServerLaughs((Request<String>) request);
+            case GET_LIKES_SERVER -> response = getServerLikes((Request<String>) request);
+            case GET_DISLIKE_SERVER -> response = getServerDislikes((Request<String>) request);
         }
         return response;
+    }
+
+    public Response getServerDislikes(Request<String> request) {
+        String messageIndex = request.getData("messageIndex");
+        String serverIndex = request.getData("serverIndex");
+        String channelIndex = request.getData("channelIndex");
+
+        Chat chat = findChannel(channelIndex, serverIndex);
+        String laughReacts = chat.getMessage(Integer.parseInt(messageIndex)).getDislikes();
+        return new Response(ResponseStatus.VALID_STATUS, laughReacts);
+    }
+
+    public Response getServerLikes(Request<String> request) {
+        String messageIndex = request.getData("messageIndex");
+        String serverIndex = request.getData("serverIndex");
+        String channelIndex = request.getData("channelIndex");
+
+        Chat chat = findChannel(channelIndex, serverIndex);
+        String laughReacts = chat.getMessage(Integer.parseInt(messageIndex)).getLikes();
+        return new Response(ResponseStatus.VALID_STATUS, laughReacts);
+    }
+
+    public Response getServerLaughs(Request<String> request) {
+        String messageIndex = request.getData("messageIndex");
+        String serverIndex = request.getData("serverIndex");
+        String channelIndex = request.getData("channelIndex");
+
+        Chat chat = findChannel(channelIndex, serverIndex);
+        String laughReacts = chat.getMessage(Integer.parseInt(messageIndex)).getLaughs();
+        return new Response(ResponseStatus.VALID_STATUS, laughReacts);
+    }
+
+    public Response reactToServerMessage(Request<String> request) {
+        String reaction = request.getData("reaction");
+        String messageIndex = request.getData("messageIndex");
+        String serverIndex = request.getData("serverIndex");
+        String channelIndex = request.getData("channelIndex");
+
+        System.out.println(reaction);
+
+        Chat chat = findChannel(channelIndex, serverIndex);
+        chat.getMessage(Integer.parseInt(messageIndex)).addReaction(reaction, channelIndex);
+
+        return new Response(ResponseStatus.VALID_STATUS);
     }
 
     public Response getDislikes(Request<String> request) {
         String messageIndex = request.getData("messageIndex");
         String person2username = request.getData("username");
-        PrivateChat privateChat = (PrivateChat) findChat(person2username);
-        String laughReacts = privateChat.getMessage(Integer.parseInt(messageIndex)).getDislikes();
+
+        Chat chat = findChat(person2username);
+        String laughReacts = chat.getMessage(Integer.parseInt(messageIndex)).getDislikes();
         return new Response(ResponseStatus.VALID_STATUS, laughReacts);
 
     }
     public Response getLikes(Request<String> request) {
         String messageIndex = request.getData("messageIndex");
         String person2username = request.getData("username");
-        PrivateChat privateChat = (PrivateChat) findChat(person2username);
-        String laughReacts = privateChat.getMessage(Integer.parseInt(messageIndex)).getLikes();
+        Chat chat = findChat(person2username);
+        String laughReacts = chat.getMessage(Integer.parseInt(messageIndex)).getLikes();
         return new Response(ResponseStatus.VALID_STATUS, laughReacts);
     }
+
      public Response getLaughs(Request<String> request) {
         String messageIndex = request.getData("messageIndex");
         String person2username = request.getData("username");
-        PrivateChat privateChat = (PrivateChat) findChat(person2username);
-        String laughReacts = privateChat.getMessage(Integer.parseInt(messageIndex)).getLaughs();
+        Chat chat = findChat(person2username);
+        String laughReacts = chat.getMessage(Integer.parseInt(messageIndex)).getLaughs();
         return new Response(ResponseStatus.VALID_STATUS, laughReacts);
     }
+
 
     public Response reactToMessage(Request<String> request) {
         String reaction = request.getData("reaction");
         String messageIndex = request.getData("messageIndex");
         String person2username = request.getData("username");
+        String type = request.getData("type");
 
-        PrivateChat privateChat = (PrivateChat) findChat(person2username);
-        privateChat.getMessage(Integer.parseInt(messageIndex)).addReaction(reaction, person2username);
+        Chat chat = findChat(person2username);
+        chat.getMessage(Integer.parseInt(messageIndex)).addReaction(reaction, person2username);
 
         return new Response(ResponseStatus.VALID_STATUS);
     }
@@ -745,7 +798,7 @@ public class GeneralClientHandler extends ClientHandler implements Runnable {
         }
         String channelMessages = "You do not have permission to view chat history.";
         if (!user.getServer(serverIndex).haveThisAccessibility(user, Permissions.CANT_VIEW_CHAT_HISTORY)) {
-            channelMessages = user.getServer(serverIndex).getChannel(channelIndex).getMessagesNotNumbered();
+            channelMessages = user.getServer(serverIndex).getChannel(channelIndex).getMessagesAsString();
         }
         user.setCurrentChat(user.getServer(serverIndex).getChannel(channelIndex));
         return new Response(ResponseStatus.VALID_STATUS, channelMessages);

@@ -1,23 +1,30 @@
 package com.example.finalproject;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+import static com.example.finalproject.SignInController.client;
+
 public class ServerIconController implements Initializable {
 
+    public Label serverIndex;
+    public Label name;
     @FXML
     private Circle serverCircle;
 
-    @FXML
-    void settingButtonPressed(ActionEvent event) {
-        DiscordApplication.showPopUp(getClass(), event, "ServerSettingMenuView.fxml");
+    private static MainController origin;
+
+    public static void setOrigin(MainController origin) {
+        ServerIconController.origin = origin;
     }
 
     @Override
@@ -27,5 +34,11 @@ public class ServerIconController implements Initializable {
         int green = random.nextInt(255);
         int blue = random.nextInt(255);
         serverCircle.setFill(Color.rgb(red, green, blue));
+    }
+
+    public void enterServer(MouseEvent mouseEvent) throws IOException {
+        ServerController.setServerIndex(serverIndex.getText());
+        ServerController.setName(name.getText());
+        origin.openServer();
     }
 }

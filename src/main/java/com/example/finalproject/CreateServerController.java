@@ -7,7 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Popup;
 
-import static com.example.finalproject.ChatController.client;
+import static com.example.finalproject.welcome.SignInController.client;
 
 public class CreateServerController {
 

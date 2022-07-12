@@ -7,11 +7,6 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #303030; -fx-background-radius: 8px;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.MessageOptionsController">
     <children>
-        <Button mnemonicParsing="false" onAction="#replyMessage" style="-fx-background-color: #303030;" text="Reply to Message" textFill="WHITE">
-            <font>
-                <Font name="System Bold" size="16.0" />
-            </font>
-        </Button>
         <VBox />
         <HBox alignment="TOP_RIGHT" />
         <Button mnemonicParsing="false" onAction="#laughMessage" style="-fx-background-color: #303030;" text="Laugh at Message" textFill="WHITE">

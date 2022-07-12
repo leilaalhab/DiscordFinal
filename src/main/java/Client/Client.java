@@ -10,10 +10,13 @@ import Model.RequestType;
 import Model.Response;
 import UserFeatures.Status;
 import UserFeatures.User;
+import com.example.finalproject.RingProgressIndicator;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -142,8 +145,8 @@ public class Client {
             int menuChoice = InputHandler.getInt("Enter choice: ", 4);
             switch (menuChoice) {
                 case 1 -> {
-                    if (viewChannels(requestedServer))
-                        return;
+//                    if (viewChannels(requestedServer))
+//                        return;
                     enterChannel(requestedServer);
                 }
                 case 2 -> viewMembers(requestedServer);
@@ -552,14 +555,21 @@ public class Client {
      * @param requestedServer given server
      * @return String of channels
      */
-    private boolean viewChannels(String requestedServer) {
+    public String viewChannels(String requestedServer) {
         Request<String> printChannels = new Request<>(RequestType.PRINT_CHANNELS);
         printChannels.addData("requestedServer", requestedServer);
         sendRequest(printChannels);
         Response response = getResponse();
-        System.out.print((String) response.getData());
 
-        return response.getData().equals("This server is no longer accessible.\n");
+        // return response.getData().equals("This server is no longer accessible.\n");
+        return (String)response.getData();
+    }
+
+    public String getMembers(String requestedServer) {
+        Request<String> getMembers = new Request<>(RequestType.GET_SERVER_MEMBERS);
+        getMembers.addData("serverIndex", requestedServer);
+        sendRequest(getMembers);
+        return (String)getResponse().getData();
     }
 
     /**
@@ -580,7 +590,7 @@ public class Client {
             int choice = InputHandler.getInt("Enter choice: ", 7);
 
             if (choice == 1) {
-                if (printChannelMessages(requestedServer, chosenChannel)) {
+                //if (printChannelMessages(requestedServer, chosenChannel)) {
                     Request<String> getChannel = new Request<>(RequestType.GET_CHANNEL);
                     getChannel.addData("channelIndex", chosenChannel);
                     getChannel.addData("serverIndex", requestedServer);
@@ -590,17 +600,17 @@ public class Client {
                         return;
                     channel = (Channel) response.getData();
                     this.user.setCurrentChat(channel);
-                } else
-                    return;
+                //} else
+                    //return;
                 listenForMessage(channel);
                 sendMessage(chosenChannel, requestedServer, RequestType.SEND_MESSAGE_TO_CHANNEL);
             } else if (choice == 2) {
                 closeChat();
-                sendFile(chosenChannel, requestedServer);
+//                sendFile(chosenChannel, requestedServer);
                 sendChannelMessage(chosenChannel, requestedServer, this.user.getUsername() + " sends a file.");
             } else if (choice == 3) {
                 closeChat();
-                downloadFile(chosenChannel, requestedServer);
+//                downloadFile(chosenChannel, requestedServer);
             } else if (choice == 4) {
                 closeChat();
                 reactToMessage(requestedServer, chosenChannel);
@@ -743,19 +753,13 @@ public class Client {
      * @param chosenChannel   given channel
      * @return string of messages
      */
-    private boolean printChannelMessages(String requestedServer, String chosenChannel) {
+    public String printChannelMessages(String requestedServer, String chosenChannel) {
         Request<String> enterChannel = new Request<>(RequestType.ENTER_CHANNEL);
         enterChannel.addData("channelIndex", chosenChannel);
         enterChannel.addData("serverIndex", requestedServer);
         sendRequest(enterChannel);
         Response response = getResponse();
-        if (response.getResponseStatus() == ResponseStatus.VALID_STATUS) {
-            System.out.println(response.getData());
-            return true;
-        } else {
-            System.out.println("You no longer have access to this server. Enter 0 to go back.");
-            return false;
-        }
+       return (String)response.getData();
     }
 
     /**
@@ -836,12 +840,12 @@ public class Client {
                             //close chat because we don't want to listen for messages anymore
                             closeChat();
 
-                            sendFile(username);
+//                            sendFile(username);
                             sendPrivateChatMessage(username, this.user.getUsername() + " sends a file.");
                         } else if (choice == 3) {
                             closeChat();
 
-                            downloadFile(username);
+//                            downloadFile(username);
                         } else if (choice == 0)
                             break;
                     }
@@ -1055,7 +1059,6 @@ public class Client {
                 e.printStackTrace();
             }
         }).start();
-
     }
 
     /**
@@ -1063,16 +1066,9 @@ public class Client {
      *
      * @param username username of the private chat
      */
-    private void sendFile(String username) {
-        String path = InputHandler.getString("path: ");
-        File file = new File(path);
-        if (!file.exists()) {
-            System.out.println("Invalid path");
-            return;
-        }
-
+    public void sendFile(String username, File file) {
         Request<String> addFileRequest = new Request<>(RequestType.ADD_FILE_TO_CHAT);
-        addFileRequest.addData("file", path);
+        addFileRequest.addData("file", file.getAbsolutePath());
         addFileRequest.addData("username", username);
         sendRequest(addFileRequest);
     }
@@ -1083,16 +1079,9 @@ public class Client {
      * @param channelIndex given channel
      * @param serverIndex  given server
      */
-    private void sendFile(String channelIndex, String serverIndex) {
-        String path = InputHandler.getString("path: ");
-        File file = new File(path);
-        if (!file.exists()) {
-            System.out.println("Invalid path");
-            return;
-        }
-
+    public void sendFile(String channelIndex, String serverIndex, File file) {
         Request<String> addFileRequest = new Request<>(RequestType.ADD_FILE_TO_CHANNEL);
-        addFileRequest.addData("file", path);
+        addFileRequest.addData("file", file.getAbsolutePath());
         addFileRequest.addData("channelIndex", channelIndex);
         addFileRequest.addData("serverIndex", serverIndex);
         sendRequest(addFileRequest);
@@ -1103,14 +1092,8 @@ public class Client {
      *
      * @param username username of the private chat
      */
-    private void downloadFile(String username) {
-        Request<String> fileNamesRequest = new Request<>(RequestType.PRINT_FILE_NAMES);
-        fileNamesRequest.addData("username", username);
-        sendRequest(fileNamesRequest);
-        Response response = getResponse();
-        System.out.println(response.getData());
-        String fileName = InputHandler.getString("file's name to download : ");
-
+    public long downloadFile(String fileName, String username) throws IOException {
+        Response response;
         Request<String> downloadFileRequest = new Request<>(RequestType.DOWNLOAD_FILE);
         downloadFileRequest.addData("fileName", fileName);
         downloadFileRequest.addData("username", username);
@@ -1118,10 +1101,11 @@ public class Client {
         response = getResponse();
         if (response.getResponseStatus() == ResponseStatus.INVALID_FILE_NAME) {
             System.out.println("Invalid file name");
-            return;
+            return 0;
         }
         File file = (File) response.getData();
         downloadFile(file);
+        return Files.size(file.toPath());
     }
 
     /**
@@ -1130,15 +1114,8 @@ public class Client {
      * @param channelIndex given channel
      * @param serverIndex  given server
      */
-    private void downloadFile(String channelIndex, String serverIndex) {
-        Request<String> fileNamesRequest = new Request<>(RequestType.PRINT_FILE_NAMES_IN_CHANNEL);
-        fileNamesRequest.addData("serverIndex", serverIndex);
-        fileNamesRequest.addData("channelIndex", channelIndex);
-        sendRequest(fileNamesRequest);
-        Response response = getResponse();
-        System.out.println(response.getData());
-        String fileName = InputHandler.getString("file's name to download : ");
-
+    public long downloadFile(String fileName, String channelIndex, String serverIndex) throws IOException {
+        Response response ;
         Request<String> downloadFileRequest = new Request<>(RequestType.DOWNLOAD_FILE_IN_CHANNEL);
         downloadFileRequest.addData("fileName", fileName);
         downloadFileRequest.addData("channelIndex", channelIndex);
@@ -1147,10 +1124,11 @@ public class Client {
         response = getResponse();
         if (response.getResponseStatus() == ResponseStatus.INVALID_FILE_NAME) {
             System.out.println("Invalid file name");
-            return;
+            return 0;
         }
         File file = (File) response.getData();
         downloadFile(file);
+        return Files.size(file.toPath());
     }
 
     /**
@@ -1212,7 +1190,6 @@ public class Client {
         sendRequest(request);
 
         return getResponse().getResponseStatus();
-
     }
 
     public String getSentRequests() {
@@ -1685,6 +1662,43 @@ public class Client {
         return (String)getResponse().getData();
     }
 
+    public String getServerDislikes(String messageIndex, String serverIndex, String channelIndex) {
+        Request<String> request = new Request<>(RequestType.GET_DISLIKE_SERVER);
+        request.addData("serverIndex", serverIndex);
+        request.addData("messageIndex", messageIndex);
+        request.addData("channelIndex", channelIndex);
+        sendRequest(request);
+        return (String)getResponse().getData();
+    }
+
+    public String getServerLikes(String messageIndex, String serverIndex, String channelIndex) {
+        Request<String> request = new Request<>(RequestType.GET_LIKES_SERVER);
+        request.addData("serverIndex", serverIndex);
+        request.addData("messageIndex", messageIndex);
+        request.addData("channelIndex", channelIndex);
+        sendRequest(request);
+        return (String)getResponse().getData();
+    }
+
+
+    public String getServerLaughs(String messageIndex, String serverIndex, String channelIndex) {
+        Request<String> request = new Request<>(RequestType.GET_LAUGHS_SERVER);
+        request.addData("serverIndex", serverIndex);
+        request.addData("messageIndex", messageIndex);
+        request.addData("channelIndex", channelIndex);
+        sendRequest(request);
+        return (String)getResponse().getData();
+    }
+
+    public void reactToServerMessage(String reaction, String messageIndex, String serverIndex, String channelIndex) {
+        Request<String> request = new Request<>(RequestType.REACT_MESSAGE_SERVER);
+        request.addData("serverIndex", serverIndex);
+        request.addData("channelIndex", channelIndex);
+        request.addData("reaction", reaction);
+        request.addData("messageIndex", messageIndex);
+        sendRequest(request);
+        getResponse();
+    }
     public void reactToMessage(String reaction, String messageIndex, String username) {
         Request<String> request = new Request<>(RequestType.REACT_MESSAGE);
         request.addData("username", username);

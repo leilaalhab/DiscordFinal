@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -13,7 +14,17 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0">
                             <children>
-                                <ListView fx:id="onlineListView" prefHeight="619.0" prefWidth="646.0" style="-fx-background-color: #424549;" />
+                                <ListView fx:id="onlineListView" prefHeight="619.0" prefWidth="646.0" style="-fx-background-color: #424549; -fx-control-inner-background: #424549;" stylesheets="@ScrollBar.css">
+                           <styleClass>
+                              <String fx:value="track" />
+                              <String fx:value="decrement-arrow" />
+                              <String fx:value="decrement-button" />
+                              <String fx:value="increment-arrow" />
+                              <String fx:value="increment-button" />
+                              <String fx:value="scroll-bar" />
+                              <String fx:value="tab-header-background" />
+                              <String fx:value="thumb" />
+                           </styleClass></ListView>
                             </children>
                         </AnchorPane>
                     </content>
@@ -22,7 +33,16 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0">
                             <children>
-                                <ListView fx:id="allListView" prefHeight="619.0" prefWidth="646.0" style="-fx-background-color: #424549;" />
+                                <ListView fx:id="allListView" prefHeight="619.0" prefWidth="646.0" style="-fx-background-color: #424549; -fx-control-inner-background: #424549;" stylesheets="@ScrollBar.css">
+                           <styleClass>
+                              <String fx:value="decrement-arrow" />
+                              <String fx:value="decrement-button" />
+                              <String fx:value="increment-arrow" />
+                              <String fx:value="increment-button" />
+                              <String fx:value="scroll-bar" />
+                              <String fx:value="thumb" />
+                              <String fx:value="track" />
+                           </styleClass></ListView>
                             </children></AnchorPane>
                     </content>
                 </Tab>
@@ -30,7 +50,17 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0">
                             <children>
-                                <ListView fx:id="pendingListView" layoutX="2.0" layoutY="2.0" prefHeight="619.0" prefWidth="655.0" style="-fx-background-color: #424549; -fx-control-inner-background: #424549;" />
+                                <ListView fx:id="pendingListView" layoutX="2.0" layoutY="2.0" prefHeight="619.0" prefWidth="655.0" style="-fx-background-color: #424549; -fx-control-inner-background: #424549;" stylesheets="@ScrollBar.css">
+                           <styleClass>
+                              <String fx:value="decrement-arrow" />
+                              <String fx:value="decrement-button" />
+                              <String fx:value="increment-arrow" />
+                              <String fx:value="increment-button" />
+                              <String fx:value="scroll-bar" />
+                              <String fx:value="tab-header-background" />
+                              <String fx:value="thumb" />
+                              <String fx:value="track" />
+                           </styleClass></ListView>
                             </children></AnchorPane>
                     </content>
                 </Tab>
@@ -38,7 +68,16 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
-                                <ListView fx:id="blockedListView" prefHeight="619.0" prefWidth="646.0" style="-fx-background-color: #424549;" />
+                                <ListView fx:id="blockedListView" prefHeight="619.0" prefWidth="646.0" style="-fx-background-color: #424549; -fx-control-inner-background: #424549;" stylesheets="@ScrollBar.css">
+                           <styleClass>
+                              <String fx:value="decrement-arrow" />
+                              <String fx:value="decrement-button" />
+                              <String fx:value="increment-arrow" />
+                              <String fx:value="increment-button" />
+                              <String fx:value="scroll-bar" />
+                              <String fx:value="thumb" />
+                              <String fx:value="track" />
+                           </styleClass></ListView>
                             </children></AnchorPane>
                     </content>
                 </Tab>

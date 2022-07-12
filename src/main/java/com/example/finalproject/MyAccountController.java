@@ -1,8 +1,11 @@
-package com.example.finalproject.account;
+package com.example.finalproject;
 
 import Client.Client;
 import UserFeatures.Status;
-import com.example.finalproject.DiscordApplication;
+import com.example.finalproject.account.ChangeEmailController;
+import com.example.finalproject.account.ChangePasswordController;
+import com.example.finalproject.account.ChangePhoneNumberController;
+import com.example.finalproject.account.ChangeUsernameController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -142,32 +145,30 @@ public class MyAccountController implements Initializable {
         //client.getUser().setPfp(new File(profilePhotoPath));
     }
 
-
-
     @FXML
     void editUsernameButtonPressed(ActionEvent event) {
-        ChangeUsernameController.setClient(client);
+        com.example.finalproject.account.ChangeUsernameController.setClient(client);
         ChangeUsernameController.setOrigin(this);
         DiscordApplication.showPopUp(getClass(), event, "ChangeUsernameView.fxml");
     }
 
     @FXML
     void editEmailButtonPressed(ActionEvent event) {
-        ChangeEmailController.setClient(client);
+        com.example.finalproject.account.ChangeEmailController.setClient(client);
         ChangeEmailController.setOrigin(this);
         DiscordApplication.showPopUp(getClass(), event, "ChangeEmailView.fxml");
     }
 
     @FXML
     void PhoneNumberButtonPressed(ActionEvent event) {
-        ChangePhoneNumberController.setClient(client);
+        com.example.finalproject.account.ChangePhoneNumberController.setClient(client);
         ChangePhoneNumberController.setOrigin(this);
        DiscordApplication.showPopUp(getClass(), event, "ChangePhoneNumberView.fxml");
     }
 
     @FXML
     void changePasswordButtonPressed(ActionEvent event) {
-        ChangePasswordController.setClient(client);
+        com.example.finalproject.account.ChangePasswordController.setClient(client);
         ChangePasswordController.setOrigin(this);
         DiscordApplication.showPopUp(getClass(), event, "changePasswordView.fxml");
     }
@@ -192,7 +193,7 @@ public class MyAccountController implements Initializable {
 
     @FXML
     void logOutButtonPressed(ActionEvent event) throws IOException{
-        client.setStatus(4);
+        //client.setStatus(4);
        application.changeScene("SignInView.fxml");
     }
 

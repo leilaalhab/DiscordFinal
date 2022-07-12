@@ -43,8 +43,4 @@ public class UserController {
 
     }
 
-    @FXML
-    private void userSettings(ActionEvent event) {
-        //DiscordApplication.showPopUp(getClass(), event, "UserSettingsView.fxml");
-    }
 }

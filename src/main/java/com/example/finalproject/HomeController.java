@@ -2,16 +2,17 @@ package com.example.finalproject;
 
 import Client.Client;
 import UserFeatures.Status;
-import com.example.finalproject.account.MyAccountController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -137,22 +138,24 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        setUsernameLabel();
-        setStatusPhoto();
+        setUsernameLabel(usernameLabel);
+        setStatusPhoto(statusCircle);
         pending();
         UserController.setOrigin(this);
         ChatController.setClient(client);
         ChatController.setOrigin(this);
+        MessageOptionsController.setClient(client);
 
         privateChatsListView.setItems(privateChats);
         ReceivedFriendRequest.setClient(client);
         try {
-            setProfilePhoto();
+            setProfilePhoto(profileCircle);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
     }
-    
+
+    //او open chat برای سرور باید ServerMessageController رو استفاده کنیم
     public void openChat(String myUsername, String chatUsername, File myPFP, File chatPFP) throws IOException {
         String allMessages = (String) client.enterPrivateChat(chatUsername).getData();
         ChatController.setUsername(chatUsername);
@@ -168,17 +171,35 @@ public class HomeController implements Initializable {
 
         panes.setItems(null);
         for (String message : messages) {
-
             Pane pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MessageView.fxml")));
             Circle profileCircle = (Circle) pane.getChildren().get(0);
-            char messageIndex = message.charAt(0);
-
-            ((Label)pane.getChildren().get(3)).setText(Character.toString(messageIndex));
-
-            String laughs = client.getLaughs(Character.toString(messageIndex), chatUsername);
-            String likes = client.getLikes(Character.toString(messageIndex), chatUsername);
-            String dislikes = client.getDislikes(Character.toString(messageIndex), chatUsername);
             String userString = message.substring(0, message.indexOf(":"));
+            String messageIndex = userString.substring(0, userString.indexOf("]"));
+            ((Label)((VBox)pane.getChildren().get(1)).getChildren().get(0)).setText(messageIndex);
+
+            String laughs = client.getLaughs(messageIndex, chatUsername);
+            String likes = client.getLikes(messageIndex, chatUsername);
+            String dislikes = client.getDislikes(messageIndex, chatUsername);
+
+            MessageOptionsController.setOrigin(this);
+
+            int numLaugh = laughs.split("\n").length;
+            int numLike = likes.split("\n").length;
+            int numDislike = dislikes.split("\n").length;
+
+            if (laughs.equals(""))
+                numLaugh--;
+            if (likes.equals(""))
+                numLike--;
+            if (dislikes.equals(""))
+                numDislike--;
+
+            System.out.println(laughs);
+            System.out.println(numLaugh);
+
+            ((Button)((HBox)pane.getChildren().get(2)).getChildren().get(0)).setText("😂 " + numLaugh);
+            ((Button)((HBox)pane.getChildren().get(2)).getChildren().get(1)).setText("👍 " + numLike);
+            ((Button)((HBox)pane.getChildren().get(2)).getChildren().get(2)).setText("👎 " + numDislike);
 
             if (userString.contains(chatUsername))  {
                 if (chatPFP == null){
@@ -188,7 +209,7 @@ public class HomeController implements Initializable {
                     Image image = new Image(chatPFP.toURI().toString());
                     profileCircle.setFill(new ImagePattern(image));
                 }
-                Label usernamel = (Label) pane.getChildren().get(1);
+                Label usernamel = (Label) ((Label)((VBox)pane.getChildren().get(1)).getChildren().get(0));
                 usernamel.setText(chatUsername);
             } else {
                 if (myPFP == null) {
@@ -198,29 +219,30 @@ public class HomeController implements Initializable {
                     Image image = new Image(myPFP.toURI().toString());
                     profileCircle.setFill(new ImagePattern(image));
                 }
-                Label usernamel = (Label) pane.getChildren().get(1);
+                Label usernamel = ((Label)((VBox)pane.getChildren().get(1)).getChildren().get(0));
                 usernamel.setText(myUsername);
             }
             message = message.substring(message.indexOf(":") + 1);
-            Label text = (Label) pane.getChildren().get(2);
+            Label text = ((Label)((VBox)pane.getChildren().get(1)).getChildren().get(1));
+            ((Label)((VBox)pane.getChildren().get(1)).getChildren().get(2)).setText(messageIndex);
             text.setText(message);
-            observableList.add(pane);
+            observableList.add(0, pane);
         }
         panes.setItems(observableList);
         contentPane.getChildren().setAll(chatPane);
     }
 
-    private void setUsernameLabel(){
+    public static void setUsernameLabel(Label usernameLabel){
         usernameLabel.setText(client.getUsername());
     }
 
 
-    private void setProfilePhoto() throws URISyntaxException {
+    public static void setProfilePhoto(Circle profileCircle) throws URISyntaxException {
         if (client.getPFP(client.getUsername()) == null) {
             Image image = new Image(new File(System.getProperty("user.dir") + "/src/main/resources/com/example/finalproject/discordLogo.png").toURI().toString());
             profileCircle.setFill(new ImagePattern(image));
         } else {
-            setProfilePhoto(client.getPFP(client.getUsername()));
+            setProfilePhoto(client.getPFP(client.getUsername()), profileCircle);
         }
     }
 
@@ -243,7 +265,26 @@ public class HomeController implements Initializable {
         statusCircle.setFill(new ImagePattern(image));
     }
 
-    private void setProfilePhoto(File file) throws URISyntaxException {
+    public static void setStatusPhoto(Circle statusCircle){
+        Status status = client.getStatus();
+        String path = "";
+        path = "/src/main/resources/com/example/finalproject/invisibleStatus.png";
+        if (status == Status.ONLINE) {
+            statusCircle.setFill(Color.GREEN);
+            return;
+        }
+        else if (status == Status.OFFLINE)
+            path = "/src/main/resources/com/example/finalproject/invisibleStatus.png";
+        else if (status == Status.IDLE)
+            path = "/src/main/resources/com/example/finalproject/idleStatus.png";
+        else if (status == Status.DND)
+            path = "/src/main/resources/com/example/finalproject/dndStatus.png";
+
+        Image image = new Image(new File(System.getProperty("user.dir") + path).toURI().toString());
+        statusCircle.setFill(new ImagePattern(image));
+    }
+
+    public static void setProfilePhoto(File file, Circle profileCircle) throws URISyntaxException {
         Image image = new Image(file.toURI().toString());
         profileCircle.setFill(new ImagePattern(image));
     }
