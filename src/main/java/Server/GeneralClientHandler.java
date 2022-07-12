@@ -233,23 +233,23 @@ public class GeneralClientHandler extends ClientHandler implements Runnable {
     public Response getDislikes(Request<String> request) {
         String messageIndex = request.getData("messageIndex");
         String person2username = request.getData("username");
-        PrivateChat privateChat = (PrivateChat) findChat(person2username);
-        String laughReacts = privateChat.getMessage(Integer.parseInt(messageIndex)).getDislikes();
+        Chat chat = findChat(person2username);
+        String laughReacts = chat.getMessage(Integer.parseInt(messageIndex)).getDislikes();
         return new Response(ResponseStatus.VALID_STATUS, laughReacts);
 
     }
     public Response getLikes(Request<String> request) {
         String messageIndex = request.getData("messageIndex");
         String person2username = request.getData("username");
-        PrivateChat privateChat = (PrivateChat) findChat(person2username);
-        String laughReacts = privateChat.getMessage(Integer.parseInt(messageIndex)).getLikes();
+        Chat chat = findChat(person2username);
+        String laughReacts = chat.getMessage(Integer.parseInt(messageIndex)).getLikes();
         return new Response(ResponseStatus.VALID_STATUS, laughReacts);
     }
      public Response getLaughs(Request<String> request) {
         String messageIndex = request.getData("messageIndex");
         String person2username = request.getData("username");
-        PrivateChat privateChat = (PrivateChat) findChat(person2username);
-        String laughReacts = privateChat.getMessage(Integer.parseInt(messageIndex)).getLaughs();
+        Chat chat = findChat(person2username);
+        String laughReacts = chat.getMessage(Integer.parseInt(messageIndex)).getLaughs();
         return new Response(ResponseStatus.VALID_STATUS, laughReacts);
     }
 
@@ -258,8 +258,8 @@ public class GeneralClientHandler extends ClientHandler implements Runnable {
         String messageIndex = request.getData("messageIndex");
         String person2username = request.getData("username");
 
-        PrivateChat privateChat = (PrivateChat) findChat(person2username);
-        privateChat.getMessage(Integer.parseInt(messageIndex)).addReaction(reaction, person2username);
+        Chat chat = findChat(person2username);
+        chat.getMessage(Integer.parseInt(messageIndex)).addReaction(reaction, person2username);
 
         return new Response(ResponseStatus.VALID_STATUS);
     }

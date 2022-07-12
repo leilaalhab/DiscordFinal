@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox fx:id="vBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="445.0" style="-fx-background-color: #303030;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.CreateRoleController">
+<VBox fx:id="vBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="445.0" style="-fx-background-color: #303030;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.CreateRoleController">
    <children>
       <Label text="PERMISSIONS" textFill="WHITE">
          <font>
@@ -101,7 +98,7 @@
       <Label layoutX="20.0" layoutY="292.0" opacity="0.7" text="Allows members to pin messages." textFill="WHITE" />
       <HBox layoutX="20.0" layoutY="320.0">
          <children>
-            <Label text="View Chat History" textFill="WHITE">
+            <Label text="Remove Member" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
@@ -112,7 +109,7 @@
             <Insets top="10.0" />
          </VBox.margin>
       </HBox>
-      <Label layoutX="20.0" layoutY="343.0" opacity="0.7" text="Allows members to view chat history." textFill="WHITE" />
+      <Label layoutX="20.0" layoutY="343.0" opacity="0.7" text="Allows members to remove member." textFill="WHITE" />
    </children>
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

@@ -20,7 +20,7 @@ public class SignInController implements Initializable {
     @FXML private TextField usernameTf;
     @FXML private Label statusMessage;
 
-    private static Client client;
+    public static Client client;
     private DiscordApplication application = new DiscordApplication();
 
     public static String usernameAuto;

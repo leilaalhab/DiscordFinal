@@ -377,7 +377,7 @@ public class DiscordServer implements Serializable {
         Set<User> users = members.keySet();
 
         for (User user : users) {
-            s = s.concat(user.getUsername() + "[" + user.getStatus().toString() + "]" + "\n");
+            s = s.concat(user.getUsername() + "\n");
         }
         return s;
     }
@@ -415,11 +415,10 @@ public class DiscordServer implements Serializable {
         for (int i = 0; i < channels.size(); i++) {
             if (channels.get(i) != null && channels.get(i).containsUser(user)) {
 
-                s = s.concat("[" + (i + 1) + "]" + channels.get(i).getName() + "\n");
+                s = s.concat((i + 1) + "]" + channels.get(i).getName() + "\n");
             }
         }
 
         return s;
     }
-
 }

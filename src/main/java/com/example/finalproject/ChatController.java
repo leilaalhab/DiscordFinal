@@ -5,9 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,19 +54,35 @@ public class ChatController implements Initializable {
     }
 
     @FXML
-    void sendFileButtonPressed(ActionEvent event) {
-
-    }
-
-    @FXML
     void sendMessageButtonPressed(ActionEvent event) throws IOException {
         client.sendPrivateChatMessage(username, messageTf.getText());
         messageTf.setText("");
         origin.openChat(client.getUsername(), username, myPfp, chatPfp);
     }
 
+    @FXML
+    void sendFileButtonPressed(ActionEvent event) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Send File");
+        File file = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+        if (file != null) {
+            String name = client.getUsername();
+            client.sendFile(name, file);
+            client.sendPrivateChatMessage(username, client.getUsername() + " sends " + file.getName() + " DOWNLOAD");
+            origin.openChat(name, username, myPfp, chatPfp);
+        }
+    }
+
     public static void addMessage(Pane pane) {
         messages.add(pane);
+    }
+
+    public void showPinnedMessages(ActionEvent event) {
+        //show a popup of pinned msg
+    }
+
+    public void downloadFile(ActionEvent event) {
+        //show a pop up of file names in this chat
     }
 
     @Override

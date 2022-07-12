@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1225.0" style="-fx-background-color: #303030;" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.ServerController">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1225.0" style="-fx-background-color: #303030;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.finalproject.ServerController">
    <center>
       <Pane fx:id="contentPane" style="-fx-background-color: #424549;" BorderPane.alignment="CENTER" />
    </center>
@@ -59,7 +55,16 @@
                   </HBox>
                </children>
             </VBox>
-            <ListView fx:id="channelsListView" prefHeight="556.0" prefWidth="213.0" style="-fx-background-color: #303030; -fx-control-inner-background: #303030;" />
+            <ListView fx:id="channelsListView" prefHeight="556.0" prefWidth="213.0" style="-fx-background-color: #303030; -fx-control-inner-background: #303030;" stylesheets="@ScrollBar.css">
+               <styleClass>
+                  <String fx:value="decrement-arrow" />
+                  <String fx:value="decrement-button" />
+                  <String fx:value="increment-arrow" />
+                  <String fx:value="increment-button" />
+                  <String fx:value="scroll-bar" />
+                  <String fx:value="thumb" />
+                  <String fx:value="track" />
+               </styleClass></ListView>
             <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #303030;" VBox.vgrow="NEVER">
                <children>
                   <Circle fx:id="profileCircle" fill="DODGERBLUE" layoutX="30.0" layoutY="27.0" radius="23.0" stroke="#303030" strokeType="INSIDE" />
@@ -100,7 +105,16 @@
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Label>
-                  <ListView fx:id="UsersListView" prefHeight="682.0" prefWidth="174.0" style="-fx-background-color: #303030; -fx-control-inner-background: #303030;" />
+                  <ListView fx:id="UsersListView" prefHeight="682.0" prefWidth="174.0" style="-fx-background-color: #303030; -fx-control-inner-background: #303030;" stylesheets="@ScrollBar.css">
+                     <styleClass>
+                        <String fx:value="decrement-arrow" />
+                        <String fx:value="decrement-button" />
+                        <String fx:value="increment-arrow" />
+                        <String fx:value="increment-button" />
+                        <String fx:value="scroll-bar" />
+                        <String fx:value="thumb" />
+                        <String fx:value="track" />
+                     </styleClass></ListView>
                </children>
             </VBox>
          </children>

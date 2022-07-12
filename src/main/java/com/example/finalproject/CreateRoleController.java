@@ -29,7 +29,7 @@ public class CreateRoleController implements Initializable {
     private SwitchButton removeChannelSB = new SwitchButton();
     private SwitchButton banMembersSB = new SwitchButton();
     private SwitchButton pinMessagesSB = new SwitchButton();
-    private SwitchButton viewChatHistorySB = new SwitchButton();
+    private SwitchButton removeMemberSB = new SwitchButton();
 
     private void addSB(int index, SwitchButton switchButton){
         ((HBox) vBox.getChildren().get(index)).getChildren().add(switchButton);
@@ -42,6 +42,6 @@ public class CreateRoleController implements Initializable {
         addSB(8, removeChannelSB);
         addSB(10, banMembersSB);
         addSB(12, pinMessagesSB);
-        addSB(14, viewChatHistorySB);
+        addSB(14, removeMemberSB);
     }
 }

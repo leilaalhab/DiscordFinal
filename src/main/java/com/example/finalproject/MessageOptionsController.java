@@ -15,6 +15,8 @@ public class MessageOptionsController {
     private static Client client;
     private static String messageIndex;
     private static HomeController origin;
+    private static int serverIndex;
+    private static int channelIndex;
 
     public static void setOrigin(HomeController origin) {
         MessageOptionsController.origin = origin;
@@ -29,6 +31,8 @@ public class MessageOptionsController {
     }
 
     public void replyMessage(ActionEvent actionEvent) {
+        //client.
+
         goBack(actionEvent);
     }
 
