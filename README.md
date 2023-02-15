@@ -1,7 +1,6 @@
 # DiscordFinal
-Discord application with GUI
+Discord - Java - JavaFx
 
-Discord - Java
 
 
 
